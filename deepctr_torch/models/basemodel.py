@@ -28,7 +28,7 @@ from ..inputs import build_input_features, SparseFeat, DenseFeat, VarLenSparseFe
     create_embedding_matrix, varlen_embedding_lookup
 from ..layers import PredictionLayer
 from ..layers.utils import slice_arrays
-from ..callbacks import History
+# from ..callbacks import History
 
 
 class Linear(nn.Module):
@@ -132,7 +132,7 @@ class BaseModel(nn.Module):
         # parameters for callbacks
         self._is_graph_network = True  # used for ModelCheckpoint in tf2
         self._ckpt_saved_epoch = False  # used for EarlyStopping in tf1.14
-        self.history = History()
+        # self.history = History()
 
     def fit(self, x=None, y=None, batch_size=None, epochs=1, verbose=1, initial_epoch=0, validation_split=0.,
             validation_data=None, shuffle=True, callbacks=None):
@@ -217,7 +217,7 @@ class BaseModel(nn.Module):
         steps_per_epoch = (sample_num - 1) // batch_size + 1
 
         # configure callbacks
-        callbacks = (callbacks or []) + [self.history]  # add history callback
+        # callbacks = (callbacks or []) + [self.history]  # add history callback
         callbacks = CallbackList(callbacks)
         callbacks.set_model(self)
         callbacks.on_train_begin()
@@ -300,7 +300,7 @@ class BaseModel(nn.Module):
 
         callbacks.on_train_end()
 
-        return self.history
+        return None
 
     def evaluate(self, x, y, batch_size=256):
         """

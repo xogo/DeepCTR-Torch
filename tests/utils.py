@@ -4,7 +4,7 @@ import os
 import numpy as np
 import torch as torch
 
-from deepctr_torch.callbacks import EarlyStopping, ModelCheckpoint
+# from deepctr_torch.callbacks import EarlyStopping, ModelCheckpoint
 from deepctr_torch.inputs import SparseFeat, DenseFeat, VarLenSparseFeat
 
 SAMPLE_SIZE = 64
@@ -139,36 +139,36 @@ def layer_test(layer_cls, kwargs={}, input_shape=None,
     return output
 
 
-def check_model(model, model_name, x, y, check_model_io=True):
-    '''
-    compile model,train and evaluate it,then save/load weight and model file.
-    :param model:
-    :param model_name:
-    :param x:
-    :param y:
-    :param check_model_io:
-    :return:
-    '''
-    early_stopping = EarlyStopping(monitor='val_acc', min_delta=0, verbose=1, patience=0, mode='max')
-    model_checkpoint = ModelCheckpoint(filepath='model.ckpt', monitor='val_acc', verbose=1,
-                                       save_best_only=True,
-                                       save_weights_only=False, mode='max', period=1)
+# def check_model(model, model_name, x, y, check_model_io=True):
+#     '''
+#     compile model,train and evaluate it,then save/load weight and model file.
+#     :param model:
+#     :param model_name:
+#     :param x:
+#     :param y:
+#     :param check_model_io:
+#     :return:
+#     '''
+#     early_stopping = EarlyStopping(monitor='val_acc', min_delta=0, verbose=1, patience=0, mode='max')
+#     model_checkpoint = ModelCheckpoint(filepath='model.ckpt', monitor='val_acc', verbose=1,
+#                                        save_best_only=True,
+#                                        save_weights_only=False, mode='max', period=1)
 
-    model.compile('adam', 'binary_crossentropy',
-                  metrics=['binary_crossentropy', 'acc'])
-    model.fit(x, y, batch_size=100, epochs=1, validation_split=0.5, callbacks=[early_stopping, model_checkpoint])
+#     model.compile('adam', 'binary_crossentropy',
+#                   metrics=['binary_crossentropy', 'acc'])
+#     model.fit(x, y, batch_size=100, epochs=1, validation_split=0.5, callbacks=[early_stopping, model_checkpoint])
 
-    print(model_name + 'test, train valid pass!')
-    torch.save(model.state_dict(), model_name + '_weights.h5')
-    model.load_state_dict(torch.load(model_name + '_weights.h5'))
-    os.remove(model_name + '_weights.h5')
-    print(model_name + 'test save load weight pass!')
-    if check_model_io:
-        torch.save(model, model_name + '.h5')
-        model = torch.load(model_name + '.h5')
-        os.remove(model_name + '.h5')
-        print(model_name + 'test save load model pass!')
-    print(model_name + 'test pass!')
+#     print(model_name + 'test, train valid pass!')
+#     torch.save(model.state_dict(), model_name + '_weights.h5')
+#     model.load_state_dict(torch.load(model_name + '_weights.h5'))
+#     os.remove(model_name + '_weights.h5')
+#     print(model_name + 'test save load weight pass!')
+#     if check_model_io:
+#         torch.save(model, model_name + '.h5')
+#         model = torch.load(model_name + '.h5')
+#         os.remove(model_name + '.h5')
+#         print(model_name + 'test save load model pass!')
+#     print(model_name + 'test pass!')
 
 
 def get_device(use_cuda=True):
