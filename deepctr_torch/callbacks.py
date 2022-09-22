@@ -271,9 +271,11 @@ class EarlyStopping():
             self.best_metric = logs[self.monitor]
             return
 
+        if ((self.monitor in self.lower_metric) and (logs[self.monitor] < self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] > self.best_metric)):
+            self.best_metric = logs[self.monitor]
+
         if ((self.monitor in self.lower_metric) and (logs[self.monitor] >= self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] <= self.best_metric)):
             self.patience_now += 1
-            self.best_metric = logs[self.monitor]
             self.logger.info(f'patience_now: {self.patience_now}')
             if self.patience_now > self.patience:
                 logs['model'].stop_training = True
