@@ -228,7 +228,7 @@ class EarlyStopping():
         self.save_path = save_path
         self.logger=logger
         self.higher_metric = ['auc','val_auc','acc','val_acc']
-        self.lower_metric = ['loss','val_loss']
+        self.lower_metric = ['binary_crossentropy','val_binary_crossentropy','logloss','val_logloss']
 
     def on_train_begin(self, logs=None):
         pass
@@ -240,6 +240,7 @@ class EarlyStopping():
         pass
 
     def on_epoch_end(self, epoch, logs=None):
+        self.logger.info(f"epoch: {epoch}")
         if self.save_path is not None and (self.best_metric is None or ((self.monitor in self.lower_metric) and (logs[self.monitor] < self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] > self.best_metric))):
             # saving
             save_path = self.save_path + "_epoch_" + str(epoch) + "_" + self.monitor + "_" + logs[self.monitor] + ".pt"
