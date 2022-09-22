@@ -262,7 +262,7 @@ class EarlyStopping():
             #                                 'input_2' : {0 : 'batch_size'},
             #                                 'output' : {0 : 'batch_size'}})
 
-            self.logs['model'].best_model_path = save_path
+            logs['model'].best_model_path = save_path
 
             self.logger.info(f'{save_path} is saved...')
         
