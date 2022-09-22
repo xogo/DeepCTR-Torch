@@ -121,57 +121,71 @@ class CallbackList():
         self.callback_list = callback_list
 
     def on_train_begin(self, logs=None):
-        for cb in self.callback_list:
-            cb.on_train_begin(logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_train_begin(logs=logs)
 
     def on_train_end(self, logs=None):
-        for cb in self.callback_list:
-            cb.on_train_end(logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_train_end(logs=logs)
 
     def on_epoch_begin(self, epoch, logs=None):
-        for cb in self.callback_list:
-            cb.on_epoch_begin(epoch=epoch, logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_epoch_begin(epoch=epoch, logs=logs)
 
     def on_epoch_end(self, epoch, logs=None):
-        for cb in self.callback_list:
-            cb.on_epoch_end(epoch=epoch, logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_epoch_end(epoch=epoch, logs=logs)
 
     def on_test_begin(self, logs=None):
-        for cb in self.callback_list:
-            cb.on_test_bigin(logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_test_bigin(logs=logs)
 
     def on_test_end(self, logs=None):
-        for cb in self.callback_list:
-            cb.on_test_end(logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_test_end(logs=logs)
 
     def on_predict_begin(self, logs=None):
-        for cb in self.callback_list:
-            cb.on_predict_bigin(logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_predict_bigin(logs=logs)
 
     def on_predict_end(self, logs=None):
-        for cb in self.callback_list:
-            cb.on_predict_end(logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_predict_end(logs=logs)
 
     def on_train_batch_begin(self, batch, logs=None):
-        for cb in self.callback_list:
-            cb.on_train_batch_begin(batch=batch, logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_train_batch_begin(batch=batch, logs=logs)
 
     def on_train_batch_end(self, batch, logs=None):
-        for cb in self.callback_list:
-            cb.on_train_batch_end(batch=batch, logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_train_batch_end(batch=batch, logs=logs)
 
     def on_test_batch_begin(self, batch, logs=None):
-        for cb in self.callback_list:
-            cb.on_test_batch_begin(batch=batch, logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_test_batch_begin(batch=batch, logs=logs)
 
     def on_test_batch_end(self, batch, logs=None):
-        for cb in self.callback_list:
-            cb.on_test_batch_end(batch=batch, logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_test_batch_end(batch=batch, logs=logs)
 
     def on_predict_batch_begin(self, batch, logs=None):
-        for cb in self.callback_list:
-            cb.on_predict_batch_begin(batch=batch, logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_predict_batch_begin(batch=batch, logs=logs)
 
     def on_predict_batch_end(self, batch, logs=None):
-        for cb in self.callback_list:
-            cb.on_predict_batch_end(batch=batch, logs=logs)
+        if self.callback_list is not None and len(self.callback_list)>0:
+            for cb in self.callback_list:
+                cb.on_predict_batch_end(batch=batch, logs=logs)
