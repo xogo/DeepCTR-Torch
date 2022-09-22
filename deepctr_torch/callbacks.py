@@ -1,4 +1,4 @@
-# import torch
+import torch
 # from tensorflow.python.keras.callbacks import EarlyStopping
 # from tensorflow.python.keras.callbacks import ModelCheckpoint
 # from tensorflow.python.keras.callbacks import History
@@ -72,7 +72,7 @@
 #                 else:
 #                     torch.save(self.model, filepath)
 
-
+# just for reference
 class CustomCallback():
     def on_train_begin(self, logs=None):
         pass
@@ -123,72 +123,182 @@ class CallbackList():
     def set_model(self, model):
         self.model = model
 
+    # for repeat use
+    def set_model_for_callbacks_logs(self, logs):
+        if logs is None:
+            logs = {'model': self.model}
+        else:
+            logs['model'] = self.model
+        return logs
+
     def on_train_begin(self, logs=None):
         if self.callback_list is not None and len(self.callback_list)>0:
+            logs = self.set_model_for_callbacks_logs(logs)
             for cb in self.callback_list:
                 cb.on_train_begin(logs=logs)
 
     def on_train_end(self, logs=None):
         if self.callback_list is not None and len(self.callback_list)>0:
+            logs = self.set_model_for_callbacks_logs(logs)
             for cb in self.callback_list:
                 cb.on_train_end(logs=logs)
 
     def on_epoch_begin(self, epoch, logs=None):
         if self.callback_list is not None and len(self.callback_list)>0:
+            logs = self.set_model_for_callbacks_logs(logs)
             for cb in self.callback_list:
                 cb.on_epoch_begin(epoch=epoch, logs=logs)
 
     def on_epoch_end(self, epoch, logs=None):
         if self.callback_list is not None and len(self.callback_list)>0:
+            logs = self.set_model_for_callbacks_logs(logs)
             for cb in self.callback_list:
                 cb.on_epoch_end(epoch=epoch, logs=logs)
 
+    # def on_test_begin(self, logs=None):
+    #     if self.callback_list is not None and len(self.callback_list)>0:
+    #         for cb in self.callback_list:
+    #             cb.on_test_bigin(logs=logs)
+
+    # def on_test_end(self, logs=None):
+    #     if self.callback_list is not None and len(self.callback_list)>0:
+    #         for cb in self.callback_list:
+    #             cb.on_test_end(logs=logs)
+
+    # def on_predict_begin(self, logs=None):
+    #     if self.callback_list is not None and len(self.callback_list)>0:
+    #         for cb in self.callback_list:
+    #             cb.on_predict_bigin(logs=logs)
+
+    # def on_predict_end(self, logs=None):
+    #     if self.callback_list is not None and len(self.callback_list)>0:
+    #         for cb in self.callback_list:
+    #             cb.on_predict_end(logs=logs)
+
+    # def on_train_batch_begin(self, batch, logs=None):
+    #     if self.callback_list is not None and len(self.callback_list)>0:
+    #         for cb in self.callback_list:
+    #             cb.on_train_batch_begin(batch=batch, logs=logs)
+
+    # def on_train_batch_end(self, batch, logs=None):
+    #     if self.callback_list is not None and len(self.callback_list)>0:
+    #         for cb in self.callback_list:
+    #             cb.on_train_batch_end(batch=batch, logs=logs)
+
+    # def on_test_batch_begin(self, batch, logs=None):
+    #     if self.callback_list is not None and len(self.callback_list)>0:
+    #         for cb in self.callback_list:
+    #             cb.on_test_batch_begin(batch=batch, logs=logs)
+
+    # def on_test_batch_end(self, batch, logs=None):
+    #     if self.callback_list is not None and len(self.callback_list)>0:
+    #         for cb in self.callback_list:
+    #             cb.on_test_batch_end(batch=batch, logs=logs)
+
+    # def on_predict_batch_begin(self, batch, logs=None):
+    #     if self.callback_list is not None and len(self.callback_list)>0:
+    #         for cb in self.callback_list:
+    #             cb.on_predict_batch_begin(batch=batch, logs=logs)
+
+    # def on_predict_batch_end(self, batch, logs=None):
+    #     if self.callback_list is not None and len(self.callback_list)>0:
+    #         for cb in self.callback_list:
+    #             cb.on_predict_batch_end(batch=batch, logs=logs)
+
+
+class EarlyStoping():
+    # def __init__(self, monitor='loss',
+    # min_delta=0.05,
+    # patience=2,
+    # verbose=0,
+    # mode='auto',
+    # baseline=None,
+    # restore_best_weights=False)
+    def __init__(self,
+            monitor='val_loss',
+            patience=5,
+            best_metric=None,
+            save_path=None,
+            logger=None):
+        self.monitor=monitor
+        self.patience=patience
+        self.patience_now = 0
+        self.best_metric = best_metric
+        self.save_path = save_path
+        self.logger=logger
+        self.higher_metric = ['auc','val_auc','acc','val_acc']
+        self.lower_metric = ['loss','val_loss']
+        
+    def on_train_begin(self, logs=None):
+        pass
+
+    def on_train_end(self, logs=None):
+        pass
+
+    def on_epoch_begin(self, epoch, logs=None):
+        pass
+
+    def on_epoch_end(self, epoch, logs=None):
+        if self.save_path is not None and (self.best_metric is None or ((self.monitor in self.lower_metric) and (logs[self.monitor] < self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] > self.best_metric))):
+            # saving
+            save_path = self.save_path + "_epoch_" + str(epoch) + "_" + self.monitor + "_" + logs[self.monitor] + ".pt"
+            torch.save(logs['model'].state_dict(), save_path)
+
+            # onnx not soppose yet, because need fine tuning.
+            # torch.onnx.export(logs.model,               # model being run
+            #                   (X1_train, X2_train),                         # model input (or a tuple for multiple inputs)
+            #                   model_save_path_tmp + ".onnx",   # where to save the model (can be a file or file-like object)
+            #                   export_params=True,        # store the trained parameter weights inside the model file
+            #                   opset_version=10,          # the ONNX version to export the model to
+            #                   do_constant_folding=True,  # whether to execute constant folding for optimization
+            #                   input_names = ['input_1','input_2'],   # the model's input names
+            #                   output_names = ['output'], # the model's output names
+            #                   dynamic_axes={'input_1' : {0 : 'batch_size'}, # variable length axes
+            #                                 'input_2' : {0 : 'batch_size'},
+            #                                 'output' : {0 : 'batch_size'}})
+
+            if self.logger is not None:
+                self.logger.info(f'{save_path} is saved...')
+        
+        # first time
+        if self.best_metric is None:
+            self.best_metric = logs[self.monitor]
+            return
+
+        if ((self.monitor in self.lower_metric) and (logs[self.monitor] >= self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] >= self.best_metric)):
+            self.patience_now += 1
+            if self.patience_now >= self.patience:
+                logs['model'].stop_training = True
+                return
+
+        pass
+
     def on_test_begin(self, logs=None):
-        if self.callback_list is not None and len(self.callback_list)>0:
-            for cb in self.callback_list:
-                cb.on_test_bigin(logs=logs)
+        pass
 
     def on_test_end(self, logs=None):
-        if self.callback_list is not None and len(self.callback_list)>0:
-            for cb in self.callback_list:
-                cb.on_test_end(logs=logs)
+        pass
 
     def on_predict_begin(self, logs=None):
-        if self.callback_list is not None and len(self.callback_list)>0:
-            for cb in self.callback_list:
-                cb.on_predict_bigin(logs=logs)
+        pass
 
     def on_predict_end(self, logs=None):
-        if self.callback_list is not None and len(self.callback_list)>0:
-            for cb in self.callback_list:
-                cb.on_predict_end(logs=logs)
+        pass
 
     def on_train_batch_begin(self, batch, logs=None):
-        if self.callback_list is not None and len(self.callback_list)>0:
-            for cb in self.callback_list:
-                cb.on_train_batch_begin(batch=batch, logs=logs)
+        pass
 
     def on_train_batch_end(self, batch, logs=None):
-        if self.callback_list is not None and len(self.callback_list)>0:
-            for cb in self.callback_list:
-                cb.on_train_batch_end(batch=batch, logs=logs)
+        pass
 
     def on_test_batch_begin(self, batch, logs=None):
-        if self.callback_list is not None and len(self.callback_list)>0:
-            for cb in self.callback_list:
-                cb.on_test_batch_begin(batch=batch, logs=logs)
+        pass
 
     def on_test_batch_end(self, batch, logs=None):
-        if self.callback_list is not None and len(self.callback_list)>0:
-            for cb in self.callback_list:
-                cb.on_test_batch_end(batch=batch, logs=logs)
+        pass
 
     def on_predict_batch_begin(self, batch, logs=None):
-        if self.callback_list is not None and len(self.callback_list)>0:
-            for cb in self.callback_list:
-                cb.on_predict_batch_begin(batch=batch, logs=logs)
+        pass
 
     def on_predict_batch_end(self, batch, logs=None):
-        if self.callback_list is not None and len(self.callback_list)>0:
-            for cb in self.callback_list:
-                cb.on_predict_batch_end(batch=batch, logs=logs)
+        pass
