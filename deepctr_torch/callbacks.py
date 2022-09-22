@@ -206,7 +206,7 @@ class CallbackList():
     #             cb.on_predict_batch_end(batch=batch, logs=logs)
 
 
-class EarlyStoping():
+class EarlyStopping():
     # def __init__(self, monitor='loss',
     # min_delta=0.05,
     # patience=2,
@@ -228,7 +228,7 @@ class EarlyStoping():
         self.logger=logger
         self.higher_metric = ['auc','val_auc','acc','val_acc']
         self.lower_metric = ['loss','val_loss']
-        
+
     def on_train_begin(self, logs=None):
         pass
 
