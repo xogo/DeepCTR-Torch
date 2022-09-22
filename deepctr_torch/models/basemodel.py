@@ -220,12 +220,12 @@ class BaseModel(nn.Module):
         # configure callbacks
         # callbacks = (callbacks or []) + [self.history]  # add history callback
         callbacks = CallbackList(callbacks)
-        callbacks.set_model(self)
+        # callbacks.set_model(self)
         callbacks.on_train_begin()
-        callbacks.set_model(self)
-        if not hasattr(callbacks, 'model'):  # for tf1.4
-            callbacks.__setattr__('model', self)
-        callbacks.model.stop_training = False
+        # callbacks.set_model(self)
+        # if not hasattr(callbacks, 'model'):  # for tf1.4
+        #     callbacks.__setattr__('model', self)
+        # callbacks.model.stop_training = False
 
         # Train
         print("Train on {0} samples, validate on {1} samples, {2} steps per epoch".format(
