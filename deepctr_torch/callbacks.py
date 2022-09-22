@@ -216,7 +216,7 @@ class EarlyStopping():
     # baseline=None,
     # restore_best_weights=False)
     def __init__(self,
-            monitor='val_loss',
+            monitor='val_logloss',
             patience=5,
             best_metric=None,
             save_path=None,
@@ -261,6 +261,8 @@ class EarlyStopping():
             #                   dynamic_axes={'input_1' : {0 : 'batch_size'}, # variable length axes
             #                                 'input_2' : {0 : 'batch_size'},
             #                                 'output' : {0 : 'batch_size'}})
+
+            self.logs['model'].best_model_path = save_path
 
             self.logger.info(f'{save_path} is saved...')
         
