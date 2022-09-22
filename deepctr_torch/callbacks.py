@@ -240,9 +240,7 @@ class EarlyStopping():
         pass
 
     def on_epoch_end(self, epoch, logs=None):
-        self.logger.info(f'self.save_path: {self.save_path}')
-        self.logger.info(f'self.best_metric: {self.best_metric}')
-        self.logger.info(f'self.monitor: {self.monitor}')
+        self.logger.info(f'self.monitor: {self.monitor}, self.best_metric: {self.best_metric}')
     
         if (self.save_path is not None) and (self.best_metric is None or ((self.monitor in self.lower_metric) and (logs[self.monitor] < self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] > self.best_metric))):
             # saving
@@ -271,6 +269,7 @@ class EarlyStopping():
             self.best_metric = logs[self.monitor]
             return
 
+        # early sotpping
         if ((self.monitor in self.lower_metric) and (logs[self.monitor] >= self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] <= self.best_metric)):
             self.patience_now += 1
             self.logger.info(f'patience_now: {self.patience_now}')
@@ -278,6 +277,7 @@ class EarlyStopping():
                 logs['model'].stop_training = True
                 return
 
+        # update
         if ((self.monitor in self.lower_metric) and (logs[self.monitor] < self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] > self.best_metric)):
             self.best_metric = logs[self.monitor]
 
