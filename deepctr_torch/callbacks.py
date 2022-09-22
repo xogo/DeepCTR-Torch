@@ -246,7 +246,7 @@ class EarlyStopping():
     
         if (self.save_path is not None) and (self.best_metric is None or ((self.monitor in self.lower_metric) and (logs[self.monitor] < self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] > self.best_metric))):
             # saving
-            save_path = self.save_path + "_epoch_" + str(epoch) + "_" + self.monitor + "_" + logs[self.monitor] + ".pt"
+            save_path = f'{self.save_path}_epoch_{epoch}_{self.monitor}_{logs[self.monitor]}.pt'
             save_dir = save_path.split('/')[:-1]
             save_dir.mkdir(parents=True, exist_ok=True)
             torch.save(logs['model'].state_dict(), save_path)
