@@ -1,4 +1,5 @@
 import torch
+from pathlib import Path
 # from tensorflow.python.keras.callbacks import EarlyStopping
 # from tensorflow.python.keras.callbacks import ModelCheckpoint
 # from tensorflow.python.keras.callbacks import History
@@ -242,6 +243,8 @@ class EarlyStopping():
         if self.save_path is not None and (self.best_metric is None or ((self.monitor in self.lower_metric) and (logs[self.monitor] < self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] > self.best_metric))):
             # saving
             save_path = self.save_path + "_epoch_" + str(epoch) + "_" + self.monitor + "_" + logs[self.monitor] + ".pt"
+            save_dir = save_path.split('/')[:-1]
+            save_dir.mkdir(parents=True, exist_ok=True)
             torch.save(logs['model'].state_dict(), save_path)
 
             # onnx not soppose yet, because need fine tuning.
@@ -267,6 +270,7 @@ class EarlyStopping():
 
         if ((self.monitor in self.lower_metric) and (logs[self.monitor] >= self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] >= self.best_metric)):
             self.patience_now += 1
+            self.logger.info(f'patience_now: {self.patience_now}')
             if self.patience_now >= self.patience:
                 logs['model'].stop_training = True
                 return
