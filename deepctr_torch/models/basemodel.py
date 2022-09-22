@@ -222,9 +222,9 @@ class BaseModel(nn.Module):
         callbacks = CallbackList(callbacks)
         callbacks.set_model(self)
         callbacks.on_train_begin()
-        callbacks.set_model(self)
-        if not hasattr(callbacks, 'model'):  # for tf1.4
-            callbacks.__setattr__('model', self)
+        # callbacks.set_model(self)
+        # if not hasattr(callbacks, 'model'):  # for tf1.4
+        #     callbacks.__setattr__('model', self)
         callbacks.model.stop_training = False
 
         # Train

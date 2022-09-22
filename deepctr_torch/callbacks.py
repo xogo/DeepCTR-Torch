@@ -120,6 +120,9 @@ class CallbackList():
     def __init__(self, callback_list):
         self.callback_list = callback_list
 
+    def set_model(self, model):
+        self.model = model
+
     def on_train_begin(self, logs=None):
         if self.callback_list is not None and len(self.callback_list)>0:
             for cb in self.callback_list:
