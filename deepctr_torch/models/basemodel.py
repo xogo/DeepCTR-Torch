@@ -458,7 +458,7 @@ class BaseModel(nn.Module):
 
     def _get_loss_func(self, loss):
         if isinstance(loss, str):
-            if loss == "binary_crossentropy":
+            if loss == "binary_crossentropy" or loss == "logloss":
                 loss_func = F.binary_cross_entropy
             elif loss == "mse":
                 loss_func = F.mse_loss
