@@ -248,7 +248,7 @@ class EarlyStopping():
             # saving
             save_path = f'{self.save_path}_epoch_{epoch}_{self.monitor}_{logs[self.monitor]}.pt'
             save_dir = '/'.join(save_path.split('/')[:-1])
-            save_dir.mkdir(parents=True, exist_ok=True)
+            Path(save_dir).mkdir(parents=True, exist_ok=True)
             torch.save(logs['model'].state_dict(), save_path)
 
             # onnx not soppose yet, because need fine tuning.
