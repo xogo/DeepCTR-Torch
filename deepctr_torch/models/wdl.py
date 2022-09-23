@@ -58,7 +58,6 @@ class WDL(BaseModel):
         self.to(device)
 
     def forward(self, X):
-        print(X)
         sparse_embedding_list, dense_value_list = self.input_from_feature_columns(X, self.dnn_feature_columns,
                                                                                   self.embedding_dict)
         logit = self.linear_model(X)
