@@ -295,6 +295,10 @@ class BaseModel(nn.Module):
                         eval_str += " - " + "val_" + name + \
                                     ": {0: .4f}".format(epoch_logs["val_" + name])
                 print(eval_str)
+
+            # add x for onnx
+            if 'input_x' not in epoch_logs:
+                epoch_logs['input_x'] = x
             callbacks.on_epoch_end(epoch, epoch_logs)
             if self.stop_training:
                 break

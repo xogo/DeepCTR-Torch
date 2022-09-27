@@ -220,15 +220,17 @@ class EarlyStopping():
             patience=5,
             best_metric=None,
             save_path=None,
-            logger=None):
+            logger=None,
+            higher_metric=['auc','val_auc','acc','val_acc'],
+            lower_metric=['binary_crossentropy','val_binary_crossentropy','logloss','val_logloss']):
         self.monitor=monitor
         self.patience=patience
         self.patience_now = 0
         self.best_metric = best_metric
         self.save_path = save_path
         self.logger=logger
-        self.higher_metric = ['auc','val_auc','acc','val_acc']
-        self.lower_metric = ['binary_crossentropy','val_binary_crossentropy','logloss','val_logloss']
+        self.higher_metric = higher_metric
+        self.lower_metric = lower_metric
 
     def on_train_begin(self, logs=None):
         pass
@@ -244,23 +246,22 @@ class EarlyStopping():
     
         if (self.save_path is not None) and (self.best_metric is None or ((self.monitor in self.lower_metric) and (logs[self.monitor] < self.best_metric)) or ((self.monitor in self.higher_metric) and (logs[self.monitor] > self.best_metric))):
             # saving
-            save_path = f'{self.save_path}_epoch_{epoch}_{self.monitor}_{logs[self.monitor]}.pt'
+            save_path = f'{self.save_path}_epoch_{epoch}_{self.monitor}_{logs[self.monitor]}'
             save_dir = '/'.join(save_path.split('/')[:-1])
             Path(save_dir).mkdir(parents=True, exist_ok=True)
-            torch.save(logs['model'].state_dict(), save_path)
+            torch.save(logs['model'].state_dict(), save_path + '.pt')
 
             # onnx not soppose yet, because need fine tuning.
-            # torch.onnx.export(logs.model,               # model being run
-            #                   (X1_train, X2_train),                         # model input (or a tuple for multiple inputs)
-            #                   model_save_path_tmp + ".onnx",   # where to save the model (can be a file or file-like object)
-            #                   export_params=True,        # store the trained parameter weights inside the model file
-            #                   opset_version=10,          # the ONNX version to export the model to
-            #                   do_constant_folding=True,  # whether to execute constant folding for optimization
-            #                   input_names = ['input_1','input_2'],   # the model's input names
-            #                   output_names = ['output'], # the model's output names
-            #                   dynamic_axes={'input_1' : {0 : 'batch_size'}, # variable length axes
-            #                                 'input_2' : {0 : 'batch_size'},
-            #                                 'output' : {0 : 'batch_size'}})
+            torch.onnx.export(logs.model,               # model being run
+                              logs['input_x'],                         # model input (or a tuple for multiple inputs)
+                              save_path + ".onnx",   # where to save the model (can be a file or file-like object)
+                              export_params=True,        # store the trained parameter weights inside the model file
+                              opset_version=10,          # the ONNX version to export the model to
+                              do_constant_folding=True,  # whether to execute constant folding for optimization
+                              input_names = ['input'],   # the model's input names
+                              output_names = ['output'], # the model's output names
+                              dynamic_axes={'input' : {0 : 'batch_size'}, # variable length axes
+                                            'output' : {0 : 'batch_size'}})
 
             logs['model'].best_model_path = save_path
 
