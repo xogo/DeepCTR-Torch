@@ -252,7 +252,7 @@ class EarlyStopping():
             torch.save(logs['model'].state_dict(), save_path + '.pt')
 
             # onnx not soppose yet, because need fine tuning.
-            torch.onnx.export(logs.model,               # model being run
+            torch.onnx.export(logs['model'],               # model being run
                               logs['input_x'],                         # model input (or a tuple for multiple inputs)
                               save_path + ".onnx",   # where to save the model (can be a file or file-like object)
                               export_params=True,        # store the trained parameter weights inside the model file
